@@ -1,5 +1,7 @@
 import { useCallback, useMemo } from "react";
-import { ShareConfig, SOCIAL_MEDIA, SocialMedia } from "./social-media";
+import { ShareConfig, SOCIAL_MEDIA, SocialMedia } from "../social-media";
+import { useClipboard } from "../use-clipboard";
+import { Link } from "lucide-react";
 
 type UseShareProps = ShareConfig & {
   clipboardTimeout?: number;
@@ -11,6 +13,10 @@ export const useShare = ({
   text,
   clipboardTimeout = 200,
 }: UseShareProps) => {
+  const { isCopied, handleCopy } = useClipboard({
+    timeout: clipboardTimeout,
+  });
+
   const shareConfig = useMemo(
     () => ({
       url,
@@ -21,8 +27,11 @@ export const useShare = ({
   );
 
   const share = useCallback(
-    (media: SocialMedia) => {
+    async (media: SocialMedia) => {
       try {
+        if (media === "clipboard") {
+          return await handleCopy(url);
+        }
         const socialConfig = SOCIAL_MEDIA[media];
         if (!socialConfig) {
           throw new Error(`Unsupported social media: ${media}`);
@@ -40,7 +49,7 @@ export const useShare = ({
         console.error("Share failed:", error);
       }
     },
-    [shareConfig]
+    [shareConfig, handleCopy, url]
   );
   const shareButtons = useMemo(
     () => [
@@ -50,8 +59,14 @@ export const useShare = ({
         icon: social.icon,
         action: () => share(key as SocialMedia),
       })),
+      {
+        media: "clipboard",
+        name: isCopied ? "Link Copiado" : "Copiar Link",
+        icon: <Link className="h-4 w-4" />,
+        action: () => share("clipboard"),
+      },
     ],
-    [share]
+    [share, isCopied]
   );
   return {
     shareButtons,

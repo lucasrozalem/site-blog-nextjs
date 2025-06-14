@@ -6,7 +6,7 @@ export type ShareConfig = {
   text?: string;
 };
 
-export type SocialMedia = "linkedin" | "facebook" | "slack" | "twitter";
+export type SocialMedia = "linkedin" | "facebook" | "slack" | "twitter" | "clipboard";
 
 export const SOCIAL_MEDIA = {
   linkedin: {
