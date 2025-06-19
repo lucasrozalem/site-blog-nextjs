@@ -1,7 +1,6 @@
-import { allPosts } from "contentlayer/*";
+import { Post } from "contentlayer/*";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,15 +13,12 @@ import { Markdown } from "@/components/markdown";
 import { Button } from "@/components/ui/button";
 import { useShare } from "@/hooks";
 
-export const PostPage = () => {
-  const router = useRouter();
+export type PostPageProps = {
+  post: Post;
+};
 
-  const post = allPosts.find(
-    (post) =>
-      post.slug.toLocaleLowerCase() ===
-      router.query.slug?.toString().toLocaleLowerCase()
-  );
-  const postUrl = `https://site.set/blog/${router.query.slug}`;
+export const PostPage = ({ post }: PostPageProps) => {
+  const postUrl = `https://site.set/blog/${post.slug}`;
   const { shareButtons } = useShare({
     url: postUrl,
     title: post?.title,
