@@ -10,8 +10,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Avatar } from "@/components/avatar";
 import { Markdown } from "@/components/markdown";
-import { Button } from "@/components/ui/button";
-import { useShare } from "@/hooks";
+import { PostShare } from "./components/post-share";
 
 export type PostPageProps = {
   post: Post;
@@ -19,11 +18,6 @@ export type PostPageProps = {
 
 export const PostPage = ({ post }: PostPageProps) => {
   const postUrl = `https://site.set/blog/${post.slug}`;
-  const { shareButtons } = useShare({
-    url: postUrl,
-    title: post?.title,
-    text: post?.description,
-  });
 
   const publisedData = new Date(post?.date ?? "").toLocaleDateString("pt-BR");
 
@@ -79,27 +73,7 @@ export const PostPage = ({ post }: PostPageProps) => {
               <Markdown content={post?.body.raw} />
             </div>
           </article>
-
-          <aside className="space-y-6">
-            <div className="rounded-lg bg-gray-700 px-4 md:p-6">
-              <h2 className=" hidden md:block text-heading-xs mb-4 text-gray-100">
-                Compartilhar
-              </h2>
-              <div className="flex justify-between md:flex-col gap-2">
-                {shareButtons.map((social) => (
-                  <Button
-                    key={social.name}
-                    variant={"outline"}
-                    onClick={() => social.action()}
-                    className="w-fit md:w-full justify-start gap-2"
-                  >
-                    {social.icon}
-                    <span className="hiddren md:block">{social.name}</span>
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </aside>
+          <PostShare url={postUrl} title={post.title} description={post.description} />
         </div>
       </div>
     </main>
